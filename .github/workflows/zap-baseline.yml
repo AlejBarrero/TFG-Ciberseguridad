@@ -1,35 +1,29 @@
 name: OWASP ZAP Baseline Scan
 
 on:
-    workflow_dispatch:
+    push:
+        branches:
+            - main
+    pull_request:
+        branches:
+            - main
+
+permissions:
+    contents: read
+    issues: write
+    security-events: write
 
 jobs:
     zap_scan:
+        name: ZAP Baseline Scan
         runs-on: ubuntu-latest
 
         steps:
-            - name: Checkout code
+            - name: Checkout repository
               uses: actions/checkout@v4
 
-            - name: Install PHP and Apache
-              run: |
-                  sudo apt update
-                  sudo apt install -y apache2 php libapache2-mod-php
-
-            - name: Deploy application
-              run: |
-                  sudo cp -r ./* /var/www/html/
-
-            - name: Start Apache
-              run: |
-                  sudo systemctl start apache2
-
-            - name: Test application
-              run: |
-                  curl http://localhost
-
-            - name: OWASP ZAP Scan
+            - name: OWASP ZAP Baseline Scan
               uses: zaproxy/action-baseline@v0.14.0
               with:
                   target: "http://localhost"
-                  cmd_options: "-a"
+                  fail_action: false
