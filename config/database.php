@@ -1,12 +1,22 @@
 <?php
 
-define("APP_NAME","SecureDesk");
+require_once "config.php";
 
-define("APP_URL","https://alejbarrero-tgf-ciberseguridad.page.gd");
+try {
 
-define("DB_HOST","sql308.infinityfree.com");
-define("DB_NAME","if0_42395487_XXX");
-define("DB_USER","if0_42395487");
-define("DB_PASS","Vd1QSm6CzC6chVM");
+    $conexion = new PDO(
+        "mysql:host=".DB_HOST.";port=3306;dbname=".DB_NAME.";charset=utf8",
+        DB_USER,
+        DB_PASS
+    );
+
+    $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $conexion->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
+} catch(PDOException $e) {
+
+    die("Error de conexión: ".$e->getMessage());
+
+}
 
 ?>

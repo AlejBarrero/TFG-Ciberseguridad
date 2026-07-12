@@ -10,4 +10,3 @@ define("DB_USER","usuario_mysql");
 define("DB_PASS","password_mysql");
 
 ?>
-
