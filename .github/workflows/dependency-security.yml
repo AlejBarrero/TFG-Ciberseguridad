@@ -1,0 +1,35 @@
+name: Dependency Security Scan
+
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+    workflow_dispatch:
+
+permissions:
+    contents: read
+    security-events: write
+
+jobs:
+    trivy:
+        name: Trivy Security Scan
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Run Trivy
+              uses: aquasecurity/trivy-action@0.31.0
+              with:
+                  scan-type: fs
+                  scan-ref: .
+                  scanners: vuln,misconfig
+                  format: sarif
+                  output: trivy-results.sarif
+
+            - name: Upload Trivy Results
+              uses: github/codeql-action/upload-sarif@v3
+              with:
+                  sarif_file: trivy-results.sarif
