@@ -1,5 +1,5 @@
 # Configuración con credenciales
-config.php
+config/config.php
 
 # Archivos temporales
 *.log
