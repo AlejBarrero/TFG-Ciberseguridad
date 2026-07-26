@@ -36,9 +36,11 @@ jobs:
               uses: actions/checkout@v5
 
             - name: Run Semgrep
-              uses: semgrep/semgrep-action@v1
-              env:
-                  SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
+              run: |
+                  pip install semgrep
+                  semgrep --config=p/php --config=p/owasp-top-ten \
+                    --json --output=semgrep-results.json . || true
+                  semgrep --config=p/php --config=p/owasp-top-ten .
 
     sonarcloud:
         name: SonarCloud Analysis
