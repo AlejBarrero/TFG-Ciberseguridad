@@ -10,10 +10,11 @@ if(isset($_GET["q"])){
 
     $q = $_GET["q"];
 
-    // intencional (vulnerable para TFG)
-    $sql = "SELECT * FROM incidencias WHERE titulo LIKE '%$q%'";
+    // ✅ CORREGIDO: consulta parametrizada — elimina SQL Injection
+    $stmt = $conexion->prepare("SELECT * FROM incidencias WHERE titulo LIKE ?");
+    $stmt->execute(["%$q%"]);
 
-    $resultados = $conexion->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+    $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 ?>
 
@@ -33,8 +34,9 @@ if(isset($_GET["q"])){
 
     <?php foreach($resultados as $r): ?>
         <div class="border p-2 mb-2">
-            <strong><?php echo $r["titulo"]; ?></strong>
-            <p><?php echo $r["descripcion"]; ?></p>
+            <!-- ✅ CORREGIDO: htmlspecialchars elimina XSS reflejado -->
+            <strong><?php echo htmlspecialchars($r["titulo"], ENT_QUOTES, "UTF-8"); ?></strong>
+            <p><?php echo htmlspecialchars($r["descripcion"], ENT_QUOTES, "UTF-8"); ?></p>
         </div>
     <?php endforeach; ?>
 
