@@ -9,7 +9,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
     $email = $_POST["email"];
     $password = $_POST["password"];
 
-    // ⚠️ (intencional para TFG: query simple sin protección avanzada)
+    // (intencional para TFG: query simple sin protección avanzada)
     $stmt = $conexion->prepare("SELECT * FROM usuarios WHERE email = '$email' AND password = '$password'");
     $stmt->execute();
 
