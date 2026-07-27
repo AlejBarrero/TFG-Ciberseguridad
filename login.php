@@ -6,20 +6,19 @@ $error = "";
 
 if($_SERVER["REQUEST_METHOD"] === "POST"){
 
-    $email    = trim($_POST["email"] ?? "");
-    $password = $_POST["password"] ?? "";
+    $email = $_POST["email"];
+    $password = $_POST["password"];
 
-    // ✅ CORREGIDO: consulta parametrizada — elimina SQL Injection
-    $stmt = $conexion->prepare("SELECT * FROM usuarios WHERE email = ?");
-    $stmt->execute([$email]);
+    // (intencional para TFG: query simple sin protección avanzada)
+    $stmt = $conexion->prepare("SELECT * FROM usuarios WHERE email = '$email' AND password = '$password'");
+    $stmt->execute();
 
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    // ✅ CORREGIDO: verificación segura con password_verify (compatible con password_hash/bcrypt)
-    if($user && password_verify($password, $user["password"])){
+    if($user){
 
         $_SESSION["usuario"] = $user["nombre"];
-        $_SESSION["rol"]     = $user["rol"];
+        $_SESSION["rol"] = $user["rol"];
 
         header("Location: dashboard.php");
         exit();
@@ -37,7 +36,7 @@ require_once "templates/header.php";
     <h3 class="mb-3">Login SecureDesk</h3>
 
     <?php if($error): ?>
-        <div class="alert alert-danger"><?php echo htmlspecialchars($error, ENT_QUOTES, "UTF-8"); ?></div>
+        <div class="alert alert-danger"><?php echo $error; ?></div>
     <?php endif; ?>
 
     <form method="POST">
